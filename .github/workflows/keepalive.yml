@@ -1,0 +1,23 @@
+name: Keep Bot Alive
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up bot via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+          port: 65002
+          command_timeout: 2m
+          script: |
+            /bin/bash /home/u368681402/opstore-bot/wake.sh
+            sleep 2
+            ps -ef | grep "[b]ot.py" || true
